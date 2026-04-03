@@ -1,0 +1,15 @@
+[project]
+name = "django-log-reader"
+version = "1.2.0"
+description = "Read & Download log files on the admin page"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+dependencies = ["django>=3.2"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["log_reader"]
