@@ -1,11 +1,18 @@
 Installation
 ============
 
+Requirements
+------------
+
+* Python 3.8 or newer
+* Django 3.2 or newer
+
 * Download and install latest version of `Django Log Reader`_:
 
 .. code-block:: console
 
     $ pip install django-log-reader
+    $ uv add django-log-reader
 
 Setup
 -------
@@ -51,4 +58,4 @@ Setup
 * Clear your browser cache
 
 
-.. _Django Log Reader: https://pypi.org/project/django-admin-two-factor/
+.. _Django Log Reader: https://pypi.org/project/django-log-reader/
