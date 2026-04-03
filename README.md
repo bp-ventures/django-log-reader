@@ -1,4 +1,7 @@
 # Django Log Reader
+
+[![CI](https://github.com/bp-ventures/django-log-reader/actions/workflows/ci.yml/badge.svg)](https://github.com/bp-ventures/django-log-reader/actions/workflows/ci.yml)
+
 **Django Log Reader** allows you to read &amp; download log files on the admin page.
 
 > This is a maintained fork of [imankarimi/django-log-reader](https://github.com/imankarimi/django-log-reader) with Django 6.0 support and modern packaging (PEP 621 / uv).
@@ -107,3 +110,6 @@ $ python manage.py runserver # default port 8000
 - Fixed `grep -m` argument splitting
 - Added `pyproject.toml` for uv / PEP 621 packaging
 - Removed `MANIFEST.in` (replaced by hatchling build backend)
+- Added CI (GitHub Actions: tests + ruff across Python 3.10/3.12/3.13)
+- Removed Python 2 leftovers (`__future__` imports, `(object)` base classes)
+- Updated classifiers for Django 3.2–6.0 and Python 3.8–3.13

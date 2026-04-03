@@ -1,8 +1,5 @@
-from __future__ import unicode_literals
-
 import django
 import os
-# import re
 import subprocess
 from fnmatch import fnmatch
 from subprocess import PIPE

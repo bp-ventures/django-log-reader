@@ -6,8 +6,8 @@ else:
     from django.utils.translation import ugettext_lazy as _
 
 
-class FileLogReader(object):
-    class Meta(object):
+class FileLogReader:
+    class Meta:
         app_label = 'log_reader'
         object_name = 'file_log_readers'
         model_name = module_name = 'file_log_readers'
