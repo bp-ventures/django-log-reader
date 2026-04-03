@@ -1,59 +1,73 @@
 # Django Log Reader
 
 [![CI](https://github.com/bp-ventures/django-log-reader/actions/workflows/ci.yml/badge.svg)](https://github.com/bp-ventures/django-log-reader/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-3.2%E2%80%936.0-092E20?logo=django&logoColor=white)
 
-**Django Log Reader** allows you to read &amp; download log files on the admin page.
+**Django Log Reader** lets you read and download log files from the Django admin.
 
-> This is a maintained fork of [imankarimi/django-log-reader](https://github.com/imankarimi/django-log-reader) with Django 6.0 support and modern packaging (PEP 621 / uv).
+This is a maintained fork of [imankarimi/django-log-reader](https://github.com/imankarimi/django-log-reader) with Django 6.0 support and modern packaging with PEP 621 and `uv`.
 
-> This version designed for the Linux operating system and uses Linux commands to read files faster.
+This project is designed for Linux and relies on standard Linux tools for fast logfile reads and search.
 
-<br />
+## Requirements
 
-## Why Django Log Reader?
+- Python 3.8 or newer
+- Django 3.2 through 6.0
+- Linux environment for the command-line search path used by the app
+
+## Why Use It?
 
 - Reading files based on Linux commands speeds up the display of file content
 - Search in files based on Linux commands
 - Download the result of the content
-- Display all files according to the pattern defined in the `settings.py`
+- Display files according to the pattern defined in `settings.py`
 - Simple interface
 - Easy integration
 
-For one large log file and a simple literal match, `grep -F` is a good baseline and `rg -F` is often in the same range, sometimes modestly faster. Published benchmarks show `rg` at 6.73 s vs `grep` at 9.20 s on a 13.5 GB file, while Python-based scanning can be tens to more than one hundred times slower for this kind of plain-text search. Use `grep -F` or `rg -F` for raw logfile search; keep Python for cases where you need real parsing logic.
+## Search Notes
 
-<br />
+- `grep -F`: treat as baseline `1.0x`
+- `rg -F`: usually about the same to roughly `1.4x` faster or slower depending on the case
+- Python: often `50x` to `100x+` slower
+
+Concrete published numbers:
+
+- On a `13.5 GB` file: `rg` took `6.73 s` and `grep` took `9.20 s`, so `rg` was about `1.37x` faster there. [1]
+- In a Python-vs-grep benchmark: `grep` took `0.196 s` and Python took `25.067 s`, so Python was about `128x` slower there. [2]
+
+Practical guidance:
+
+- For one huge logfile and a plain-text match, use `grep -F` or `rg -F`.
+- If you want the safest conventional pick for raw single-file search, use `grep -F 'ERROR' big.log`.
+- Do not use Python unless you need real parsing logic.
 
 ![Django Log Reader](https://raw.githubusercontent.com/imankarimi/django-log-reader/main/screenshots/django_log_reader.png)
 
+[1]: https://ripgrep.dev/benchmarks/?utm_source=chatgpt.com "ripgrep Benchmarks - Speed Comparison vs grep, ag, ack"
+[2]: https://python.code-maven.com/compare-the-speed-of-grep-with-python-regex?utm_source=chatgpt.com "Compare the speed of grep with Python regexes"
 
-<br>
+## Installation
 
-## How to use it
-
-<br />
-
-* This fork is not published on PyPI. Install directly from GitHub:
+This fork is not published on PyPI. Install directly from GitHub:
 
 ```bash
 $ pip install git+https://github.com/bp-ventures/django-log-reader.git
-# or with uv
 $ uv add git+https://github.com/bp-ventures/django-log-reader.git
 ```
 
-<br />
+## Configuration
 
-* Add `log_reader` application to the `INSTALLED_APPS` setting of your Django project `settings.py` file:
+Add `log_reader` to `INSTALLED_APPS` in `settings.py`:
 
 ```python
 INSTALLED_APPS = (
-# ...
-"log_reader.apps.LogReaderConfig",
+    # ...
+    "log_reader.apps.LogReaderConfig",
 )
 ```
 
-<br />
-
-* You can Add the following value In your `settings.py` file:
+Optional settings:
 
 ```python
 # This value specifies the folder for the files. The default value is 'logs'
@@ -75,18 +89,15 @@ LOG_READER_MAX_READ_LINES = 1000
 LOG_READER_EXCLUDE_FILES = []
 ```
 
-<br />
+Collect static files in production:
 
-* Collect static if you are in production environment:
 ```bash
 $ python manage.py collectstatic
 ```
 
-* Clear your browser cache
+Clear your browser cache after setup.
 
-<br />
-
-## Start the app
+## Run
 
 ```bash
 # Set up the database
@@ -100,9 +111,7 @@ $ python manage.py createsuperuser
 $ python manage.py runserver # default port 8000
 ```
 
-* Access the `admin` section in the browser: `http://127.0.0.1:8000/`
-
-<br />
+Access the `admin` section in the browser at `http://127.0.0.1:8000/`.
 
 ## Changelog
 
