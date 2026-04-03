@@ -7,7 +7,7 @@ import subprocess
 from fnmatch import fnmatch
 from subprocess import PIPE
 
-if django.get_version() >= '4':
+if django.VERSION >= (4, 0):
     from django.utils.translation import gettext_lazy as _
 else:
     from django.utils.translation import ugettext_lazy as _
@@ -33,7 +33,7 @@ def read_file_lines(file_name, search=None):
 
         if search:
             result = subprocess.run(
-                ['grep', '-m %s' % settings.LOG_READER_MAX_READ_LINES, search, file_path],
+                ['grep', '-m', str(settings.LOG_READER_MAX_READ_LINES), search, file_path],
                 stdout=PIPE,
                 stderr=PIPE,
                 encoding="utf8",
