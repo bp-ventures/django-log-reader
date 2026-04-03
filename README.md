@@ -1,6 +1,8 @@
 # Django Log Reader
 **Django Log Reader** allows you to read &amp; download log files on the admin page.
 
+> This is a maintained fork of [imankarimi/django-log-reader](https://github.com/imankarimi/django-log-reader) with Django 6.0 support and modern packaging (PEP 621 / uv).
+
 > This version designed for the Linux operating system and uses Linux commands to read files faster.
 
 <br />
@@ -29,8 +31,8 @@
 
 ```bash
 $ pip install django-log-reader
-# or
-$ easy_install django-log-reader
+# or with uv
+$ uv add django-log-reader
 ```
 
 <br />
@@ -94,3 +96,14 @@ $ python manage.py runserver # default port 8000
 ```
 
 * Access the `admin` section in the browser: `http://127.0.0.1:8000/`
+
+<br />
+
+## Changelog
+
+### 1.2.0
+- Django 6.0 compatibility (`is_composite_pk` support)
+- Fixed version detection to use `django.VERSION` tuple instead of string comparison
+- Fixed `grep -m` argument splitting
+- Added `pyproject.toml` for uv / PEP 621 packaging
+- Removed `MANIFEST.in` (replaced by hatchling build backend)
