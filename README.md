@@ -30,12 +30,12 @@
 
 <br />
 
-* Download and install latest version of Django Log Reader:
+* This fork is not published on PyPI. Install directly from GitHub:
 
 ```bash
-$ pip install django-log-reader
+$ pip install git+https://github.com/bp-ventures/django-log-reader.git
 # or with uv
-$ uv add django-log-reader
+$ uv add git+https://github.com/bp-ventures/django-log-reader.git
 ```
 
 <br />
