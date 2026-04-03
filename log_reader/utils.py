@@ -1,5 +1,6 @@
 import django
 import os
+import shutil
 import subprocess
 from fnmatch import fnmatch
 from subprocess import PIPE
@@ -10,6 +11,14 @@ else:
     from django.utils.translation import ugettext_lazy as _
 
 from log_reader import settings
+
+_RG = shutil.which('rg')
+
+
+def _search_cmd(search: str, file_path: str, max_lines: int) -> list[str]:
+    if _RG:
+        return [_RG, '--no-heading', '--no-filename', '-F', '-m', str(max_lines), search, file_path]
+    return ['grep', '-F', '-m', str(max_lines), search, file_path]
 
 
 def get_log_files(directory):
@@ -30,7 +39,7 @@ def read_file_lines(file_name, search=None):
 
         if search:
             result = subprocess.run(
-                ['grep', '-m', str(settings.LOG_READER_MAX_READ_LINES), search, file_path],
+                _search_cmd(search, file_path, settings.LOG_READER_MAX_READ_LINES),
                 stdout=PIPE,
                 stderr=PIPE,
                 encoding="utf8",

@@ -74,6 +74,52 @@ class ReadFileLinesTest(TestCase):
         for line in lines:
             assert 'ERROR' in line
 
+    def test_search_cmd_rg_argv(self):
+        from log_reader import utils as log_utils
+        with mock.patch.object(log_utils, '_RG', '/usr/bin/rg'):
+            cmd = log_utils._search_cmd('ERROR', '/logs/app.log', 500)
+        assert cmd == ['/usr/bin/rg', '--no-heading', '--no-filename', '-F', '-m', '500', 'ERROR', '/logs/app.log']
+
+    def test_search_cmd_grep_argv(self):
+        from log_reader import utils as log_utils
+        with mock.patch.object(log_utils, '_RG', None):
+            cmd = log_utils._search_cmd('ERROR', '/logs/app.log', 500)
+        assert cmd == ['grep', '-F', '-m', '500', 'ERROR', '/logs/app.log']
+
+    def test_read_file_lines_passes_rg_argv(self):
+        from log_reader import utils as log_utils
+        self._write('app.log', 'ERROR one\nINFO two\n')
+        fake_result = mock.Mock()
+        fake_result.stdout = 'ERROR one\n'
+        with mock.patch.object(log_utils, '_RG', '/usr/bin/rg'), \
+             mock.patch('log_reader.utils.subprocess.run', return_value=fake_result) as mock_run, \
+             mock.patch.object(log_settings, 'LOG_READER_DIR_PATH', self.tmpdir):
+            read_file_lines('app.log', search='ERROR')
+        called_cmd = mock_run.call_args[0][0]
+        assert called_cmd[0] == '/usr/bin/rg'
+        assert '-F' in called_cmd
+
+    def test_read_file_lines_passes_grep_argv(self):
+        from log_reader import utils as log_utils
+        self._write('app.log', 'ERROR one\nINFO two\n')
+        fake_result = mock.Mock()
+        fake_result.stdout = 'ERROR one\n'
+        with mock.patch.object(log_utils, '_RG', None), \
+             mock.patch('log_reader.utils.subprocess.run', return_value=fake_result) as mock_run, \
+             mock.patch.object(log_settings, 'LOG_READER_DIR_PATH', self.tmpdir):
+            read_file_lines('app.log', search='ERROR')
+        called_cmd = mock_run.call_args[0][0]
+        assert called_cmd[0] == 'grep'
+        assert '-F' in called_cmd
+
+    def test_search_fixed_string_metacharacters(self):
+        self._write('app.log', 'user+name logged in\nuserXname ignored\n')
+        with mock.patch.object(log_settings, 'LOG_READER_DIR_PATH', self.tmpdir):
+            ok, lines = read_file_lines('app.log', search='user+name')
+        assert ok is True
+        assert len(lines) == 1
+        assert 'user+name' in lines[0]
+
 
 class SplitFileContentTest(TestCase):
 
