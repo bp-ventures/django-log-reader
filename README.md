@@ -19,6 +19,8 @@
 - Simple interface
 - Easy integration
 
+For one large log file and a simple literal match, `grep -F` is a good baseline and `rg -F` is often in the same range, sometimes modestly faster. Published benchmarks show `rg` at 6.73 s vs `grep` at 9.20 s on a 13.5 GB file, while Python-based scanning can be tens to more than one hundred times slower for this kind of plain-text search. Use `grep -F` or `rg -F` for raw logfile search; keep Python for cases where you need real parsing logic.
+
 <br />
 
 ![Django Log Reader](https://raw.githubusercontent.com/imankarimi/django-log-reader/main/screenshots/django_log_reader.png)
