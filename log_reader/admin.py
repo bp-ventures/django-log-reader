@@ -10,27 +10,23 @@ from log_reader.utils import get_log_files, read_file_lines
 
 @admin.register(FileLogReader)
 class FileLogReaderAdmin(admin.ModelAdmin):
-    list_filter = ['id']
+    list_filter = ["id"]
 
     def get_urls(self):
         info = self.model._meta.app_label, self.model._meta.module_name
         return [
-            path(r'', self.admin_site.admin_view(self.changelist_view), name='%s_%s_changelist' % info),
+            path(r"", self.admin_site.admin_view(self.changelist_view), name=f"{info[0]}_{info[1]}_changelist"),
         ]
 
     def changelist_view(self, request, extra_context=None):
-        filename = request.GET.get('file_name', settings.LOG_READER_DEFAULT_FILE)
-        search = request.GET.get('q', None) or None
+        filename = request.GET.get("file_name", settings.LOG_READER_DEFAULT_FILE)
+        search = request.GET.get("q", None) or None
         is_valid, file_contents = read_file_lines(file_name=filename, search=search)
         if not is_valid:
             self.message_user(request, file_contents, level=messages.ERROR)
         log_files = get_log_files(settings.LOG_READER_DIR_PATH)
 
         context = dict(
-            self.admin_site.each_context(request),
-            log_files=log_files,
-            file_contents=file_contents if is_valid else [],
-            file_name=filename,
-            django_version=django.get_version()
+            self.admin_site.each_context(request), log_files=log_files, file_contents=file_contents if is_valid else [], file_name=filename, django_version=django.get_version()
         )
         return TemplateResponse(request, "log_reader/admin/change_list.html", context=context)

@@ -6,9 +6,37 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.8"
 dependencies = ["django>=3.2"]
+authors = [
+    { name = "Iman Karimi", email = "imankarimi.mail@gmail.com" },
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6.0",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development",
+]
+
+[project.urls]
+Homepage = "https://github.com/bp-ventures/django-log-reader"
 
 [dependency-groups]
-dev = ["ruff"]
+dev = ["ruff", "pre-commit"]
 
 [build-system]
 requires = ["hatchling"]
@@ -19,3 +47,10 @@ packages = ["log_reader"]
 
 [tool.ruff]
 line-length = 180
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["log_reader"]

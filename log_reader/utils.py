@@ -1,9 +1,9 @@
-import django
 import os
 import shutil
 import subprocess
 from fnmatch import fnmatch
-from subprocess import PIPE
+
+import django
 
 if django.VERSION >= (4, 0):
     from django.utils.translation import gettext_lazy as _
@@ -12,19 +12,19 @@ else:
 
 from log_reader import settings
 
-_RG = shutil.which('rg')
+_RG = shutil.which("rg")
 
 
 def _search_cmd(search: str, file_path: str, max_lines: int) -> list[str]:
     if _RG:
-        return [_RG, '--no-heading', '--no-filename', '-F', '-m', str(max_lines), search, file_path]
-    return ['grep', '-F', '-m', str(max_lines), search, file_path]
+        return [_RG, "--no-heading", "--no-filename", "-F", "-m", str(max_lines), search, file_path]
+    return ["grep", "-F", "-m", str(max_lines), search, file_path]
 
 
 def get_log_files(directory):
-    for (dir_path, dir_names, filenames) in os.walk(directory):
+    for _dir_path, _dir_names, filenames in os.walk(directory):
         log_files = []
-        all_files = list(filter(lambda x: x.find('~') == -1, filenames))
+        all_files = list(filter(lambda x: x.find("~") == -1, filenames))
         log_files.extend([x for x in all_files if fnmatch(x, settings.LOG_READER_FILES_PATTERN) and x not in settings.LOG_READER_EXCLUDE_FILES])
         return list(set(log_files))
     return []
@@ -32,23 +32,21 @@ def get_log_files(directory):
 
 def read_file_lines(file_name, search=None):
     if file_name not in get_log_files(settings.LOG_READER_DIR_PATH):
-        return False, _("%s file, not found. Please try again." % file_name)
+        return False, _(f"{file_name} file, not found. Please try again.")
 
     try:
-        file_path = '%s/%s' % (settings.LOG_READER_DIR_PATH, file_name)
+        file_path = f"{settings.LOG_READER_DIR_PATH}/{file_name}"
 
         if search:
             result = subprocess.run(
                 _search_cmd(search, file_path, settings.LOG_READER_MAX_READ_LINES),
-                stdout=PIPE,
-                stderr=PIPE,
+                capture_output=True,
                 encoding="utf8",
             )
         else:
             result = subprocess.run(
-                ['tail', '-%s' % settings.LOG_READER_MAX_READ_LINES, file_path],
-                stdout=PIPE,
-                stderr=PIPE,
+                ["tail", f"-{settings.LOG_READER_MAX_READ_LINES}", file_path],
+                capture_output=True,
                 encoding="utf8",
             )
         content = repr(result.stdout) if result.stdout else None
@@ -64,4 +62,3 @@ def split_file_content(content):
     #     res = re.findall(settings.LOG_READER_REGEX_SPLIT_PATTERN, content) if content else []
     res = [x for x in data if len(x) > 5]
     return res
-

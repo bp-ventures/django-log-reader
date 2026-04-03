@@ -6,7 +6,6 @@ from log_reader.models import FileLogReader
 
 
 class AdminRegistrationTest(TestCase):
-
     def test_model_is_registered(self):
         assert admin.site.is_registered(FileLogReader)
 
@@ -18,4 +17,4 @@ class AdminRegistrationTest(TestCase):
         model_admin = admin.site.get_model_admin(FileLogReader)
         urls = model_admin.get_urls()
         assert len(urls) == 1
-        assert 'log_reader_file_log_readers_changelist' in urls[0].name
+        assert "log_reader_file_log_readers_changelist" in urls[0].name

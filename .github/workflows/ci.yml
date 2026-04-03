@@ -7,15 +7,44 @@ on:
     branches: [main]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv python install 3.13
+      - run: uv sync --dev
+      - run: uv run ruff check log_reader/
+      - run: uv run ruff format --check log_reader/
+
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.10", "3.12", "3.13"]
+        include:
+          - python-version: "3.10"
+            django-version: "3.2"
+          - python-version: "3.10"
+            django-version: "4.2"
+          - python-version: "3.12"
+            django-version: "5.2"
+          - python-version: "3.13"
+            django-version: "6.0"
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - run: uv python install ${{ matrix.python-version }}
       - run: uv sync --dev
-      - run: uv run ruff check log_reader/
+      - run: uv pip install "django==${{ matrix.django-version }}.*"
       - run: DJANGO_SETTINGS_MODULE=log_reader.tests.settings uv run python -m django test log_reader.tests
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv python install 3.13
+      - run: uv build
+      - run: uv pip install dist/*.whl
+      - run: python -c "import log_reader; print(log_reader.__name__)"
